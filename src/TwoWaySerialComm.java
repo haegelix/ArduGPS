@@ -7,11 +7,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 public class TwoWaySerialComm
 {
-    public TwoWaySerialComm()
+	int mode;
+	static final int MODE_GUI 		= 0;
+	static final int MODE_CONSOLE 	= 1;
+	GUI gui;
+
+	JTextArea textIn;
+	JTextField textOut;
+	
+    public TwoWaySerialComm(GUI gui)
     {
-        super();
+    	super();
+    	
+    	if(gui == null)
+    		mode = MODE_CONSOLE;
+    	else {
+    		mode = MODE_GUI;
+    		this.gui = gui;
+    		textIn = gui.getTextIn();
+    		textOut = gui.getTextOut();
+    		
+    	}
     }
     
     void connect ( String portName ) throws Exception
@@ -107,7 +128,6 @@ public class TwoWaySerialComm
         }
         catch ( Exception e )
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

@@ -17,31 +17,41 @@ public class GUI extends JFrame {
 	
 	private static final String version = "v 0.1";
 	
-	static final int[] baudRate = {300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200};
-	static final int baudRate_default = 9600;
+	private static final int[] baudRate = {300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200};
+	private static final int baudRate_default = 9600;
 	
-	static final String logfile = "serialLog.log";
+	private static final String logfile = "serialLog.log";
 	
-	static final String[] logging = {"Debug", "Verbose", "Warning", "Error"};
-	static final String[] logging_tags  = {"DEBUG", "VRBSE", "WARNG", "ERROR", "SR IN", "SROUT"};
-	static final int LOG_DEBUG 		= 0;
-	static final int LOG_VERBOSE 	= 1;
-	static final int LOG_WARNING 	= 2;
-	static final int LOG_ERROR 		= 3;
-	static final int LOG_SERIAL_IN	= 4;
-	static final int LOG_SERIAL_OUT	= 5;
-	static final int logging_default = LOG_DEBUG;
-	int loglevel = LOG_DEBUG;
+	public static final String[] logging = {"Debug", "Verbose", "Warning", "Error"};
+	public static final String[] logging_tags  = {"DEBUG", "VRBSE", "WARNG", "ERROR", "SR IN", "SROUT"};
+	public static final int LOG_DEBUG 		= 0;
+	public static final int LOG_VERBOSE 	= 1;
+	public static final int LOG_WARNING 	= 2;
+	public static final int LOG_ERROR 		= 3;
+	public static final int LOG_SERIAL_IN	= 4;
+	public static final int LOG_SERIAL_OUT	= 5;
+	public static final int logging_default = LOG_DEBUG;
+	private int loglevel = LOG_DEBUG;
 	
+	// Menu Bar
+	private JMenuBar menubar;
+	private JMenu[] menu;
+	private JRadioButtonMenuItem[] baudRateMenuItems;
+	private JRadioButtonMenuItem[] loggingMenuItems;
+	private JCheckBoxMenuItem logSerialData;
+	private ButtonGroup baudRateGroup = new ButtonGroup();
+	private ButtonGroup portGroup = new ButtonGroup();
+	private ButtonGroup loggingGroup = new ButtonGroup();
 	
-	JMenuBar menubar;
-	JMenu[] menu;
-	JRadioButtonMenuItem[] baudRateMenuItems;
-	JRadioButtonMenuItem[] loggingMenuItems;
-	JCheckBoxMenuItem logSerialData;
-	ButtonGroup baudRateGroup = new ButtonGroup();
-	ButtonGroup portGroup = new ButtonGroup();
-	ButtonGroup loggingGroup = new ButtonGroup();
+	// GUI
+	private Container pane;
+	private JTextArea textIn;
+	private JTextField textOut;
+	private JPanel ioPanel;
+	private LayoutManager ioLayout;
+	private JPanel buttonPanel;
+	private LayoutManager buttonLayout;
+	private JButton exitButton, reconnectButton, refreshButton;
 
 	public GUI() {
 		//Oberflaeche bauen
@@ -60,13 +70,13 @@ public class GUI extends JFrame {
 		print("Max-Height: " +e.getHeight(), LOG_DEBUG);
 	}
 	
-	void build() {
+	private void build() {
 		initMenuBar();
 		initGUI();
 		initWindow();
 	}
 	
-	void initMenuBar() {		
+	private void initMenuBar() {		
 		menubar = new JMenuBar();
 		menu = new JMenu[3];
 		// Menü-Punkt Bit-Rate
@@ -116,15 +126,7 @@ public class GUI extends JFrame {
 		}
 	}
 	
-	void initGUI() {
-		Container pane;
-		JTextArea textIn;
-		JTextField textOut;
-		JPanel ioPanel;
-		LayoutManager ioLayout;
-		JPanel buttonPanel;
-		LayoutManager buttonLayout;
-		JButton exitButton, reconnectButton, refreshButton;
+	private void initGUI() {
 		
 		//Build Text-IO-Panel
 		ioPanel = new JPanel();		
@@ -181,7 +183,7 @@ public class GUI extends JFrame {
 		pane.add(buttonPanel, BorderLayout.PAGE_END);
 	}
 	
-	void initWindow() {
+	private void initWindow() {
 		this.setTitle("Test");
 		this.setResizable(true);
 		//this.setLocation(0, 0);
@@ -192,7 +194,7 @@ public class GUI extends JFrame {
 		this.setVisible(true);
 	}
 	
-	void print(String s, int loglevel) {
+	public void print(String s, int loglevel) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		//System.out.println(dateFormat.format(date)); //2016/11/16 12:08:43
 		s = dateFormat.format(new Date()) + " [" + logging_tags[loglevel] + "]: " + s;
@@ -216,7 +218,7 @@ public class GUI extends JFrame {
 		System.out.println(s);
 	}
 	
-	void fetchLogfile() {
+	private void fetchLogfile() {
 		try {
 			InputStream in = new FileInputStream(logfile);
 			in.close();
@@ -233,7 +235,7 @@ public class GUI extends JFrame {
 		}
 	}
 	
-    void listPorts(){
+    private void listPorts(){
         @SuppressWarnings("unchecked")
 		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
         while ( portEnum.hasMoreElements() ){
@@ -242,7 +244,7 @@ public class GUI extends JFrame {
         }        
     }
     
-    static String getPortTypeName(int portType){
+    private static String getPortTypeName(int portType){
         switch(portType){
             case CommPortIdentifier.PORT_I2C:
                 return "I2C";
@@ -258,4 +260,12 @@ public class GUI extends JFrame {
                 return "unknown type";
         }
     }
+
+	public JTextArea getTextIn() {
+		return textIn;
+	}
+
+	public JTextField getTextOut() {
+		return textOut;
+	}
 }
