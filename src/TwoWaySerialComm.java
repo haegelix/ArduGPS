@@ -124,7 +124,7 @@ public class TwoWaySerialComm
     {
         try
         {
-            (new TwoWaySerialComm()).connect("COM4");
+            (new TwoWaySerialComm(null)).connect("COM4");
         }
         catch ( Exception e )
         {
