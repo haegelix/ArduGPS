@@ -10,7 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-//test comnmit
+//test commit 3
 
 public class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
