@@ -15,10 +15,12 @@ public class TwoWaySerialComm
 	int mode;
 	static final int MODE_GUI 		= 0;
 	static final int MODE_CONSOLE 	= 1;
+	
 	GUI gui;
-
 	JTextArea textIn;
 	JTextField textOut;
+	Thread sr;
+	Thread sw;
 	
     public TwoWaySerialComm(GUI gui)
     {
@@ -31,16 +33,30 @@ public class TwoWaySerialComm
     		this.gui = gui;
     		textIn = gui.getTextIn();
     		textOut = gui.getTextOut();
-    		
     	}
     }
     
-    void connect ( String portName ) throws Exception
-    {
+    public void restart(String portName) {
+    	if(sr != null) {
+    		sr.interrupt();
+    		while(sr.isAlive());
+    	}
+    	if(sw != null) {
+    		sw.interrupt();
+    		while(sw.isAlive());
+    	}
+    	try {
+			connect(portName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    void connect (String portName) throws Exception {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
         if ( portIdentifier.isCurrentlyOwned() )
         {
-            System.out.println("Error: Port is currently in use");
+            print("Port is currently in use!", GUI.LOG_ERROR);
         }
         else
         {
@@ -60,75 +76,64 @@ public class TwoWaySerialComm
             }
             else
             {
-                System.out.println("Error: Only serial ports are handled by this example.");
+                print("Only serial ports are handled by this App.", GUI.LOG_ERROR);
             }
         }     
     }
     
     /** */
-    public static class SerialReader implements Runnable 
-    {
+    public static class SerialReader implements Runnable {
         InputStream in;
         
-        public SerialReader ( InputStream in )
-        {
+        public SerialReader ( InputStream in ) {
             this.in = in;
         }
         
-        public void run ()
-        {
+        public void run () {
             byte[] buffer = new byte[1024];
             int len = -1;
-            try
-            {
-                while ( ( len = this.in.read(buffer)) > -1 )
-                {
+            try {
+                while ( ( len = this.in.read(buffer)) > -1 ) {
                     System.out.print(new String(buffer,0,len));
                 }
             }
-            catch ( IOException e )
-            {
+            catch ( IOException e ) {
                 e.printStackTrace();
             }            
         }
     }
 
     /** */
-    public static class SerialWriter implements Runnable 
-    {
+    public static class SerialWriter implements Runnable {
         OutputStream out;
         
-        public SerialWriter ( OutputStream out )
-        {
+        public SerialWriter ( OutputStream out ) {
             this.out = out;
         }
         
-        public void run ()
-        {
-            try
-            {                
+        public void run () {
+            try {                
                 int c = 0;
-                while ( ( c = System.in.read()) > -1 )
-                {
+                while ((c = System.in.read()) > -1){
                     this.out.write(c);
                 }                
             }
-            catch ( IOException e )
-            {
+            catch (IOException e) {
                 e.printStackTrace();
             }            
         }
     }
     
-    public static void main ( String[] args )
-    {
-        try
-        {
+    public static void main (String[] args) {
+        try {
             (new TwoWaySerialComm(null)).connect("COM4");
         }
-        catch ( Exception e )
-        {
+        catch(Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private void print(String s, int loglevel) {
+    	
     }
 }
