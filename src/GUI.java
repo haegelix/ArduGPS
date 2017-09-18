@@ -298,29 +298,7 @@ public class GUI extends JFrame {
 		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
 		while ( portEnum.hasMoreElements() ){
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
-			printText(portIdentifier.getName()  +  " - " +  getPortTypeName(portIdentifier.getPortType()), LOG_DEBUG, getLogLevel(), logSerialData.isSelected());
-		}        
-	}
-
-	/**
-	 * Translates the numerical identifier to String
-	 * @param portType Contains the port-type identifier
-	 * @return String containing the port-type-name
-	 */
-	private static String getPortTypeName(int portType){
-		switch(portType){
-		case CommPortIdentifier.PORT_I2C:
-			return "I2C";
-		case CommPortIdentifier.PORT_PARALLEL:
-			return "Parallel";
-		case CommPortIdentifier.PORT_RAW:
-			return "Raw";
-		case CommPortIdentifier.PORT_RS485:
-			return "RS485";
-		case CommPortIdentifier.PORT_SERIAL:
-			return "Serial";
-		default:
-			return "unknown type";
+			printText(portIdentifier.getName()  +  " - " +  TwoWaySerialComm.getPortTypeName(portIdentifier.getPortType()), LOG_DEBUG, getLogLevel(), logSerialData.isSelected());
 		}
 	}
 
